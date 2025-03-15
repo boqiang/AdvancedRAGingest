@@ -17,6 +17,11 @@ Pillow>=10.0.0
 # Logging and Progress
 tqdm>=4.66.1
 
+# File Monitoring
+watchdog>=3.0.0
+
 # Optional Dependencies for Enhanced Features
 pytesseract>=0.3.10  # For OCR capabilities
-numpy>=1.24.0        # Required by image processing functions 
+numpy>=1.24.0        # Required by image processing functions
+fpdf>=1.7.2          # For creating test PDFs
+requests>=2.31.0     # For downloading sample images 

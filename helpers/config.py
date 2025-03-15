@@ -30,16 +30,26 @@ global_config = SimpleNamespace()
 
 DEFAULT_CONFIG = """
 [API_KEYS]
-UNSTRUCTURED_API_KEY = your_unstructured_api_key_here
-OPENAI_API_KEY = your_openai_api_key_here
+# No external APIs needed - all processing is local or through Ollama
+UNSTRUCTURED_API_KEY = not_used
+UNSTRUCTURED_URL = not_used
+OPENAI_API_KEY = not_used
 
 [DIRECTORIES]
 INPUT_DIR = ./input
 OUTPUT_DIR = ./output
 
+[MODEL]
+embedding_model = nomic-embed-text:latest
+llm_model = llama3.2-vision
+ollama_server = https://ollama.easynet.world
+
 [PDF_PROCESSING]
 SAVE_IMAGES = True
 SAVE_DOCUMENT_ELEMENTS = True
+
+[FILE_MONITORING]
+polling_interval = 5
 """
 
 def create_default_config(config_path):
@@ -76,10 +86,15 @@ def load_config(config_path='config.ini'):
     
     # Check for critical parameters
     critical_params = [
-        ('API_KEYS', 'unstructured_api_key','your_unstructured_api_key_here'),
-        ('API_KEYS', 'openai_api_key','your_openai_api_key_here'),
-        ('DIRECTORIES', 'input_dir','./input'),
-        ('DIRECTORIES', 'output_dir','./output')
+        ('API_KEYS', 'unstructured_api_key', 'not_used'),
+        ('API_KEYS', 'unstructured_url', 'not_used'),
+        ('API_KEYS', 'openai_api_key', 'not_used'),
+        ('DIRECTORIES', 'input_dir', './input'),
+        ('DIRECTORIES', 'output_dir', './output'),
+        ('MODEL', 'embedding_model', 'nomic-embed-text:latest'),
+        ('MODEL', 'llm_model', 'llama3.2-vision'),
+        ('MODEL', 'ollama_server', 'https://ollama.easynet.world'),
+        ('FILE_MONITORING', 'polling_interval', '5')
     ]
     
     missing_params = []
