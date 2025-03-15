@@ -8,6 +8,9 @@ Copyright: (C) 2024. All rights reserved.
 """
 
 import fitz
+import matplotlib
+# Use the 'Agg' backend to avoid GUI issues
+matplotlib.use('Agg')
 import matplotlib.patches as patches
 import matplotlib.pyplot as plt
 from PIL import Image

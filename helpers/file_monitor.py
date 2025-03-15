@@ -68,11 +68,12 @@ class FileHandler(FileSystemEventHandler):
             file_path (str): Path to the PDF file.
         """
         try:
-            # Get the directory of the file
+            # Get the directory and filename
             input_dir = os.path.dirname(file_path)
+            filename = os.path.basename(file_path)
             
             # Process the PDF
-            self.processor.process_pdfs(input_dir, [file_path])
+            self.processor.process_pdfs(input_dir, [filename])
             
             # Create debugging markdown
             create_debugging_markdown()
@@ -129,7 +130,13 @@ class FileMonitor:
         if pdf_files:
             console.print(f"Processing {len(pdf_files)} existing PDF files...", style="blue")
             
+            # Process each PDF file
+            self.processor.process_pdfs(self.directory, pdf_files)
+            
+            # Create debugging markdown
+            create_debugging_markdown()
+            
+            # Add files to processed list
             for file_path in pdf_files:
                 full_path = os.path.join(self.directory, file_path)
-                self.event_handler.processed_files.add(full_path)
-                self.event_handler.process_file(full_path) 
+                self.event_handler.processed_files.add(full_path) 
