@@ -5,17 +5,17 @@
 
 PDF Ingestion and Processing Application
 
-This script provides a command-line interface for processing PDF files.
-It allows users to process PDF files from an input directory, extract 
-annotations and optionally save bounding box images.
+This script provides an automated system for processing PDF files.
+It monitors the input directory for new PDF files and automatically
+processes them, extracting annotations and generating debugging markdown.
 
 Key features:
-- Configurable input and output directories
-- Progress tracking for PDF processing
+- Automatic monitoring of input directory
+- Processing of new PDF files as they are added
 - Error handling and logging
 
 Usage:
-python 01_RAG_ingest_app.py
+python main.py
 """
 
 import os
@@ -24,29 +24,11 @@ from helpers import *
 from helpers.pdf_ingest import PDFProcessor
 from helpers.logging import setup_logging
 from helpers.generate_markdown import create_debugging_markdown
+from helpers.file_monitor import FileMonitor
 
 from rich.console import Console
-from rich.prompt import Prompt
 
 console = Console()
-
-def is_valid_directory(path):
-    return os.path.isdir(path)
-
-def select_task():
-    """Prompts user to select a task to perform."""
-    tasks = [
-        "Ingest PDFs and create JSON & Annotations",
-        "Create Debugging Markdowns from partition JSONs",
-        "Exit"
-    ]
-    
-    console.print("\nAvailable tasks:", style="blue")
-    for i, task in enumerate(tasks, 1):
-        console.print(f"{i}. {task}")
-    
-    choice = Prompt.ask("\nSelect task", choices=[str(i) for i in range(1, len(tasks) + 1)])
-    return tasks[int(choice) - 1]
 
 def main():
     """Main function to run the PDF processing application."""
@@ -55,22 +37,16 @@ def main():
     
     setup_logging()
     load_config()
-      
-    while True:
-        task = select_task()
-        
-        if task == "Ingest PDFs and create JSON & Annotations":
-            input_dir = global_config.directories.input_dir
-            processor = PDFProcessor()
-            pdf_files = get_files_with_extension(input_dir, '.pdf')
-            processor.process_pdfs(input_dir, pdf_files)
-            
-        elif task == "Create Debugging Markdowns from partition JSONs":
-            create_debugging_markdown()
-        
-        elif task == "Exit":
-            break
-        
+    
+    # Get the input directory from the configuration
+    input_dir = global_config.directories.input_dir
+    
+    # Create a file monitor for the input directory
+    monitor = FileMonitor(input_dir)
+    
+    # Start monitoring the directory
+    monitor.start()
+    
     console.print("\nApplication completed.", style="green")
 
 if __name__ == "__main__":
